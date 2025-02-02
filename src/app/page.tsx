@@ -1,7 +1,6 @@
 "use client";
 import { useState, useRef, useEffect } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
 import { TbPlayerTrackPrevFilled, TbPlayerTrackNextFilled } from "react-icons/tb";
 import { FaPlayCircle, FaPauseCircle } from "react-icons/fa";
 
@@ -73,18 +72,17 @@ const Page = () => {
 
         ctx.clearRect(0, 0, width, height); // Clear the canvas
 
-        let cX = width / 2;
-        let cY = height / 2;
-
-        let radianAdd = Constants.TWO_PI / dataArrayRef.current.length;
+        const cX = width / 2;
+        const cY = height / 2
+        const radianAdd = Constants.TWO_PI / dataArrayRef.current.length;
         let radian = 0;
 
         ctx.fillStyle = `hsl(${hue}, 100%, 50%)`;
         for (let i = 0; i < dataArrayRef.current.length; i++) {
           const v = dataArrayRef.current[i];
 
-          let x = v * Math.cos(radian) + cX;
-          let y = v * Math.sin(radian) + cY;
+          const x = v * Math.cos(radian) + cX;
+          const y = v * Math.sin(radian) + cY;
 
           ctx.beginPath();
           ctx.arc(x, y, 5, 0, Constants.TWO_PI, false);
