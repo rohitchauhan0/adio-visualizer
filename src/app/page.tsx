@@ -16,7 +16,7 @@ const Page = () => {
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const [currentTrack, setCurrentTrack] = useState(0);
-  const tracks = ["/track1.mp3", "/track2.mp3", "/track3.mp3"];
+  const tracks = ["/track1.mp3", "/track2.mp3", "/track3.mp3", "/track4.mp3"];
 
   const audioContextRef = useRef<AudioContext | null>(null);
   const analyserRef = useRef<AnalyserNode | null>(null);
@@ -120,20 +120,31 @@ const Page = () => {
 
   const changeTrack = (direction: "next" | "prev") => {
     setCurrentTrack((prev) => {
+      // Calculate the new index based on the direction
       const newIndex =
         direction === "next"
           ? (prev + 1) % tracks.length
           : (prev - 1 + tracks.length) % tracks.length;
   
       if (audioRef.current) {
-        audioRef.current.src = tracks[newIndex]; // Directly assign the track URL string
-        audioRef.current.load(); // Ensure the new track is loaded
-        audioRef.current.play(); // Play the new track immediately
+        // Set the new source
+        audioRef.current.src = tracks[newIndex];
+        
+        // Wait for metadata to load before playing
+        audioRef.current.onloadedmetadata = () => {
+          setDuration(audioRef.current?.duration || 0); // Set duration
+          audioRef.current?.play(); // Play the new track
+          setIsPlaying(true); // Ensure play state is updated
+        };
+  
+        // Load the new track
+        audioRef.current.load();
       }
   
       return newIndex;
     });
   };
+  
   
   
 
@@ -194,7 +205,7 @@ const Page = () => {
 
 
         <div className="w-full   z-10">
-         <div className="-mt-16 flex items-center flex-col justify-center">
+         <div className="-mt-16 space-y-4 flex items-center flex-col justify-center">
          <p className="text-white">
   {`${Math.floor(currentTime / 60)}:${String(Math.floor(currentTime % 60)).padStart(2, "0")}`} / 
   {`${Math.floor(duration / 60)}:${String(Math.floor(duration % 60)).padStart(2, "0")}`}
@@ -202,7 +213,7 @@ const Page = () => {
 <input
   type="range"
   ref={progressRef}
-  className="w-full"
+  className="w-full custom-range"
   min="0"
   max="100"
   step="1"
