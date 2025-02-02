@@ -3,19 +3,39 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --light-clr: #e5e5e5;
+  --primary-clr: #6490f6;
+  --secondary-clr: #c1daff;
+  --active-clr: rgba(149, 153, 186, 0.4);
+  --player-bg: rgba(5, 9, 51, 0.4);
+  --scrollbar-track: rgb(79, 78, 78);
+  --scrollbar-thumb: rgb(116, 116, 116);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+
+#progress-bar {
+  appearance: none;
+  -webkit-appearance: none;
+  width: 90%;
+  height: 5px;
+  background: linear-gradient(
+    90deg,
+    var(--light-clr),
+    var(--secondary-clr),
+    var(--primary-clr),
+    var(--secondary-clr),
+    var(--light-clr)
+  );
+  border-radius: 4px;
+  margin: 12px 0 16px;
+  cursor: pointer;
 }
 
-body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+#progress-bar::-webkit-slider-thumb {
+  appearance: none;
+  -webkit-appearance: none;
+  background: var(--light-clr);
+  width: 15px;
+  aspect-ratio: 1/1;
+  border-radius: 50%;
 }
