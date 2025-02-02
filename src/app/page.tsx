@@ -119,20 +119,31 @@ const Page = () => {
   };
 
   const changeTrack = (direction: "next" | "prev") => {
-    if (direction === "next") {
-      setCurrentTrack((prev) => (prev + 1) % tracks.length);
-    } else {
-      setCurrentTrack((prev) => (prev - 1 + tracks.length) % tracks.length);
-    }
+    setCurrentTrack((prev) => {
+      const newIndex =
+        direction === "next"
+          ? (prev + 1) % tracks.length
+          : (prev - 1 + tracks.length) % tracks.length;
+  
+      if (audioRef.current) {
+        audioRef.current.src = tracks[newIndex]; // Directly assign the track URL string
+        audioRef.current.load(); // Ensure the new track is loaded
+        audioRef.current.play(); // Play the new track immediately
+      }
+  
+      return newIndex;
+    });
   };
-
+  
+  
 
   const handleProgressChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const newTime = (parseFloat(e.target.value) / 100) * duration;
     if (audioRef.current) {
+      const newTime = (parseFloat(e.target.value) / 100) * audioRef.current.duration;
       audioRef.current.currentTime = newTime;
     }
   };
+  
 
   return (
     <div className="flex items-center justify-center min-h-screen  relative  bg-[#35363A]  ">
@@ -183,18 +194,23 @@ const Page = () => {
 
 
         <div className="w-full   z-10">
-         <div className="-mt-16 flex items-center justify-center">
-         <input
-            type="range"
-            ref={progressRef}
-            className="w-full"
-            min="0"
-            max="100"
-            step="1"
-            id="progress-bar"
-            
-            onChange={handleProgressChange}
-          />
+         <div className="-mt-16 flex items-center flex-col justify-center">
+         <p className="text-white">
+  {`${Math.floor(currentTime / 60)}:${String(Math.floor(currentTime % 60)).padStart(2, "0")}`} / 
+  {`${Math.floor(duration / 60)}:${String(Math.floor(duration % 60)).padStart(2, "0")}`}
+</p>
+<input
+  type="range"
+  ref={progressRef}
+  className="w-full"
+  min="0"
+  max="100"
+  step="1"
+  id="progress-bar"
+  value={(currentTime / duration) * 100 || 0}  // Bind current progress
+  onChange={handleProgressChange}
+/>
+
          </div>
         </div>
       </div>
