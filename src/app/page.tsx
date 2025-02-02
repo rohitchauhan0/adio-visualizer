@@ -24,7 +24,7 @@ const Page = () => {
   const dataArrayRef = useRef<Uint8Array | null>(null);
 
   let hue = 0;
-  let hueAdd = 0.2;
+  const hueAdd = 0.2;
 
   // Setup audio visualizer
   useEffect(() => {
